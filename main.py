@@ -1,26 +1,22 @@
 import pygame
 import random
 
-"""
-10 x 20 square grid
-shapes: S, Z, I, O, J, L, T
-represented in order by 0 - 6
-"""
+
 
 pygame.font.init()
 
-# GLOBALS VARS
+
 s_width = 800
 s_height = 700
-play_width = 300  # meaning 300 // 10 = 30 width per block
-play_height = 600  # meaning 600 // 20 = 20 height per blo ck
+play_width = 300
+play_height = 600
 block_size = 30
 
 top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height
 
 
-# SHAPE FORMATS
+
 
 S = [['.....',
       '.....',
@@ -130,8 +126,8 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 16
 
 
 class Piece(object):
-    rows = 20  # y
-    columns = 10  # x
+    rows = 20
+    columns = 10
 
     def __init__(self, column, row, shape):
         self.x = column
@@ -199,16 +195,17 @@ def draw_text_middle(text, size, color, surface):
     font = pygame.font.SysFont('comicsans', size, bold=True)
     label = font.render(text, 1, color)
 
-    surface.blit(label, (top_left_x + play_width/2 - (label.get_width() / 2), top_left_y + play_height/2 - label.get_height()/2))
+    surface.blit(label, (top_left_x + play_width/2 - (label.get_width() / 2), top_left_y + play_height/2 -
+                         label.get_height()/2))
 
 
 def draw_grid(surface, row, col):
     sx = top_left_x
     sy = top_left_y
     for i in range(row):
-        pygame.draw.line(surface, (128,128,128), (sx, sy+ i*30), (sx + play_width, sy + i * 30))  # horizontal lines
+        pygame.draw.line(surface, (128,128,128), (sx, sy+ i*30), (sx + play_width, sy + i * 30))
         for j in range(col):
-            pygame.draw.line(surface, (128,128,128), (sx + j * 30, sy), (sx + j * 30, sy + play_height))  # vertical lines
+            pygame.draw.line(surface, (128,128,128), (sx + j * 30, sy), (sx + j * 30, sy + play_height))
 
 
 def clear_rows(grid, locked):
@@ -289,7 +286,7 @@ def main():
         fall_time += clock.get_rawtime()
         clock.tick()
 
-        # PIECE FALLING CODE
+
         if fall_time/1000 >= fall_speed:
             fall_time = 0
             current_piece.y += 1
@@ -314,22 +311,18 @@ def main():
                     if not valid_space(current_piece, grid):
                         current_piece.x -= 1
                 elif event.key == pygame.K_UP:
-                    # rotate shape
+
                     current_piece.rotation = current_piece.rotation + 1 % len(current_piece.shape)
                     if not valid_space(current_piece, grid):
                         current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)
 
                 if event.key == pygame.K_DOWN:
-                    # move shape down
+
                     current_piece.y += 1
                     if not valid_space(current_piece, grid):
                         current_piece.y -= 1
 
-                '''if event.key == pygame.K_SPACE:
-                    while valid_space(current_piece, grid):
-                        current_piece.y += 1
-                    current_piece.y -= 1
-                    print(convert_shape_format(current_piece))'''  # todo fix
+
 
         shape_pos = convert_shape_format(current_piece)
 
@@ -339,7 +332,7 @@ def main():
             if y > -1:
                 grid[y][x] = current_piece.color
 
-        # IF PIECE HIT GROUND
+
         if change_piece:
             for pos in shape_pos:
                 p = (pos[0], pos[1])
@@ -348,14 +341,14 @@ def main():
             next_piece = get_shape()
             change_piece = False
 
-            # call four times to check for multiple clear rows
+
             clear_rows(grid, locked_positions)
 
         draw_window(win)
         draw_next_shape(next_piece, win)
         pygame.display.update()
 
-        # Check if user lost
+
         if check_lost(locked_positions):
             run = False
 
